@@ -1,0 +1,7 @@
+.vscode
+Pipfile.lock
+*.key
+*.pth
+*.notes
+*.pdf
+__pycache__/

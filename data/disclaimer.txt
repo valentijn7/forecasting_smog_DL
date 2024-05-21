@@ -1,0 +1,3 @@
+The data files are not stored here. They can be downloaded through:
+(1) ../collecting/knmy.ipynb for the meteorological data; and
+(2) through KNMI's official database for the pollution data.
