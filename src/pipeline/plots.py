@@ -10,6 +10,7 @@ from .statistics import get_daily_sensor_metrics
 from .statistics import get_mean_per_day
 from .statistics import get_mean_per_month
 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -119,4 +120,36 @@ def plot_day_vs_month(df: pd.DataFrame, sensor: str, meta: dict):
     plt.xticks(rotation = 18)
     plt.ylabel(f"{meta['comp']} value in {meta['unit']}")
     plt.legend()
+    plt.show()
+
+
+def plot_corr_matrix(df, threshold = 0, method = 'pearson'):
+    """
+    Uses a correlation matrix to show the correlation between the
+    columns of a dataframe using the Peasron correlation coefficient.
+    Other methods are 'kendall' and 'spearman', but 'pearson' is
+    the default and also what was used in the thesis
+    
+    Source/inspiration: # https://seaborn.pydata.org/examples/many_pairwise_correlations.html
+
+    :param df: dataframe
+    :param threshold: threshold value for the correlation coefficient to show in the plot
+    :param method: correlation coefficient calculation method
+    """
+    corr = df.corr(method)
+    if threshold:
+        corr = corr[corr.abs() > threshold]
+
+    mask = np.triu(np.ones_like(corr, dtype = bool))
+
+    f, ax = plt.subplots(figsize = (7, 5))
+    # # cmap = sns.diverging_palette(230, 20, as_cmap = True)
+    # cmap = sns.diverging_palette(0, 255, s = 100, sep = 1, as_cmap = True)
+
+    # sns.heatmap(corr, mask = mask, cmap = cmap, center = 0,
+    #             square = True, linewidths = .5, cbar_kws = {"shrink": .5});
+    sns.heatmap(corr, mask = mask,
+                vmin = -1, vmax = 1, center = 0,
+                square = True, linewidth = .5, cbar_kws = {"shrink": .75})
+    plt.tight_layout()
     plt.show()
