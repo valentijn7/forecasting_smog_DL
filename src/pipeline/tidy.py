@@ -215,6 +215,19 @@ def delete_empty_columns(df: pd.DataFrame, NaN_max_percentage: int = 0.25) -> pd
     return df.dropna(thresh = threshold, axis = 1)
 
 
+def make_index_timezone_naive(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Makes the index timezone naive, because the timezone is not
+    relevant for the data, and it's easier to work with the data
+    when the timezone is removed. To be more specific: pollutant
+    data from 2023 onward seems to be timezone aware, the rest not
+
+    :param df: DataFrame
+    :return: DataFrame with timezone naive index
+    """
+    return df.tz_localize(None)
+
+
 def tidy_raw_contaminant_data(
         df: pd.DataFrame, year: str, subset_months: bool = True, 
         start_mon: str = '01', end_mon: str = '12', fill_NaNs: bool = True
@@ -248,6 +261,7 @@ def tidy_raw_contaminant_data(
     df = change_contaminant_date_format(df)         
                                         # set the index to the dates ('datetime')
     df = df.set_index('DateTime', drop = True)
+    df = make_index_timezone_naive(df)  # make the index timezone naive
     df = resolve_split_columns(df)      # concat sensor data split over two columns
 
     if fill_NaNs:
@@ -338,6 +352,7 @@ def tidy_raw_meteo_data(
     df['HH'] = df['HH'].subtract(1)     # 1-24 to 0-23 hour range
     df = change_meteo_date_format(df)   # create DateTime column
     df = df.set_index('DateTime')       # set DateTime as index
+    df = make_index_timezone_naive(df)  # make the index timezone naive
 
     df = df[[col, 'STN']].copy()        # keep only selected col and station name col
     if col == 'DD':                     # 990 (change in DD (or WD)) -> 0, for more even influence

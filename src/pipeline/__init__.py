@@ -1,7 +1,6 @@
 # src/pipeline/__init__.py
 
-# __init__py for the imperatively programmed data pipeline used
-# in the paper: https://icml.cc/virtual/2024/36782
+# __init__py for the imperatively programmed data pipeline package
 
 __version__ = '0.0.0' # MAJOR.MINOR.PATCH versioning
 __author__ = 'valentijn7' # GitHub username

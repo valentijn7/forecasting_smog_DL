@@ -1286,16 +1286,6 @@ def execute_pipeline(
     target_keys = ['PM25', 'PM10', 'O3', 'NO2']
 
 
-    # The 2023 data seemed to have a different kind of DateTime index,
-    # namely one that was timezone-aware instead of timezone-naive.
-    # Hence, we delete the timezone information here for uniformity
-    # and avoid errors later on. Timezone info can be checked with:
-    # for df in frames_val_2023_1D_u:
-    #     print(df.index.tz)
-
-    delete_timezone_from_index(frames_val_2023_1D_u)
-    delete_timezone_from_index(frames_test_2023_1D_u)
-
     # Now, we concatenate the dataframes horizontally
     df_train_2017_horizontal_u = concat_frames_horizontally(frames_train_2017_1D_u, input_keys)
     df_train_2018_horizontal_u = concat_frames_horizontally(frames_train_2018_1D_u, input_keys)
