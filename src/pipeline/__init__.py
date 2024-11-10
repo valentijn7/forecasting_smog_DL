@@ -47,6 +47,6 @@ from .plots import plot_corr_matrix
 from .plots import plot_distributions_KDE
 from .plots import plot_multiple_distributions
 from .plots import plot_tails
-
+from .pipeline import execute_pipeline
 
 print("Pipeline initialized\n")

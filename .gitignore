@@ -4,4 +4,12 @@ Pipfile.lock
 *.pth
 *.notes
 *.pdf
+*.csv
+2017_meteo_data.txt
+2018_meteo_data.txt
+2019_meteo_data.txt
+2020_meteo_data.txt
+2021_meteo_data.txt
+2022_meteo_data.txt
+2023_meteo_data.txt
 __pycache__/
