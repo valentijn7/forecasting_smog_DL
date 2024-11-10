@@ -28,7 +28,7 @@
 # [train/validation/test]. For more information, see the thesis
 
 
-from typing import Tuple
+from typing import List, Tuple
 import pandas as pd
 
 
@@ -79,7 +79,8 @@ def perform_data_split_without_train(
 
 
 def print_split_ratios(
-        dfs_train: list, df_val: pd.DataFrame, df_test: pd.DataFrame, comp: str):
+        dfs_train: List[pd.DataFrame], dfs_val: List[pd.DataFrame],
+        dfs_test: List[pd.DataFrame], comp: str):
     """
     Prints the splitting ratios (useful
     after the train-validaiton-test split)
@@ -89,6 +90,9 @@ def print_split_ratios(
     :param df_test: testing set DataFrame
     :param comp: component name (although they all (should) have the same ratio)
     """
+    df_val = pd.concat(dfs_val)
+    df_test = pd.concat(dfs_test)
+
     total_len = sum([len(df) for df in dfs_train]) + len(df_val) + len(df_test)
     print(f"[train/validation/test] %-ratio for {comp} data is: ", end = '')
     print(f"[{round((sum([len(df) for df in dfs_train])) / total_len * 100, 1)}/", end = '')

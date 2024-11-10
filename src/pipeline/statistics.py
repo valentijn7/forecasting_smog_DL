@@ -3,6 +3,7 @@
 # This script contains functions which for simple data statistics.
 # A lot of these get used in plots.py
 
+from typing import List
 import pandas as pd
 
 
@@ -148,6 +149,28 @@ def print_sensor_metrics_min_mean_max_entries(df: pd.DataFrame, sensor: str, met
         return print(f"{meta['comp']} measurements for sensor {sensor} are not avaiable\n")
 
     print(f"[min, mean, max] for sensor {sensor} measuring {meta['comp']} {meta['unit']}:")
+    print(f"[{get_min_sensor_value(df, sensor):.4f}, {get_mean_sensor_value(df, sensor):.4f},", end = ' ')
+    print(f"{get_max_sensor_value(df, sensor):.4f}] with n = {get_col_measurement_count(df, sensor)}")
+    print()
+
+
+def print_aggegrated_sensor_metrics(dfs: List[pd.DataFrame], sensor: str, meta: dict) -> None:
+    """
+    Takes in a list of dataframes spanning multiple years and prints
+    the aggregated min, mean, max, and number of entries of a sensor
+    within these dataframes, similar to print_sensor_metrics_min_mean_max_entries()
+
+    :param dfs: list of dataframes
+    :param sensor: sensor name
+    :param meta: dictionary with metadata
+    """
+    # First check if type and sensor column, then concatenate and print
+    if not all([sensor in df.columns for df in dfs]):
+        return print(f"print_aggregated_sensor_metrics(): Sensor {sensor} is not avaiable\n")
+    df = pd.concat(dfs)
+
+    print(f"[min, mean, max] for sensor {sensor} measuring {meta['comp']} {meta['unit']}")
+    print(f"aggregated over multiple years:")
     print(f"[{get_min_sensor_value(df, sensor):.4f}, {get_mean_sensor_value(df, sensor):.4f},", end = ' ')
     print(f"{get_max_sensor_value(df, sensor):.4f}] with n = {get_col_measurement_count(df, sensor)}")
     print()

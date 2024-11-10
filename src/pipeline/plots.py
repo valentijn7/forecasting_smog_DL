@@ -10,8 +10,10 @@ from .statistics import get_daily_sensor_metrics
 from .statistics import get_mean_per_day
 from .statistics import get_mean_per_month
 
+from typing import List, Union
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -20,6 +22,8 @@ def set_style():
     """ 
     Sets the style for the plots
     """
+    mpl.rcParams['figure.figsize'] = (6, 2) # landscape plots
+
     sns.set_theme()
     sns.axes_style('darkgrid')
     sns.set_palette('dark') 
@@ -153,3 +157,110 @@ def plot_corr_matrix(df, threshold = 0, method = 'pearson'):
                 square = True, linewidth = .5, cbar_kws = {"shrink": .75})
     plt.tight_layout()
     plt.show()
+
+
+def plot_distributions_KDE(data: Union[pd.Series, pd.DataFrame], title: str) -> None:
+    """
+    Plots the distribution of a sensor's measurements
+    using KDE (Kernel Density Estimation)
+    
+    :param data: sensor's measurements
+    :param title: title of the plot
+    """
+    set_style()
+    
+    if isinstance(data, pd.Series):      # distinguish between Series and DataFrame
+        sns.kdeplot(data)
+    else:
+        for column in data.columns:
+            sns.kdeplot(data, x = column)
+
+    plt.xlim(right = 1)
+    plt.ylim(top = 10)
+    plt.title(f"Measurement distributions - {title}")
+    plt.xlabel('Measurement value')
+    plt.show()
+
+
+def plot_distributions_KDE_combined(
+        dfs: List[pd.DataFrame], title: str, metadata: dict
+    ) -> None:
+    """
+    Same as plot_distributions_KDE, but first concatenates
+    the dataframes in the list
+
+    :param dfs: list of dataframes
+    :param title: title of the plot
+    :param metadata: metadata for the sensors
+    """
+    set_style()
+
+    df = pd.concat(dfs)
+
+    for column in df.columns:
+        sns.kdeplot(df, x = column)
+
+    plt.xlim(right = 1)
+    plt.ylim(top = 10)
+    plt.title(f"Measurement distributions - {title}")
+    plt.xlabel('Measurement value')
+    plt.show()
+    
+
+def plot_multiple_distributions(data: list, title: str, metadata: dict) -> None:
+    """
+    Plots the distribution of multiple sensors' measurements
+    
+    :param data: list of sensors' measurements
+    :param title: title of the plot
+    """
+    set_style()
+    
+    # if isinstance(data1, pd.Series):    # distinguish between Series and DataFrame
+    #     sns.kdeplot(data1, label = '1')
+    #     sns.kdeplot(data2, label = '2')
+    #     sns.kdeplot(data3, label = '3')
+    # else:
+        # for column in data1.columns:
+        #     sns.kdeplot(data1, x = column, label = '1')
+        # for column in data2.columns:
+        #     sns.kdeplot(data2, x = column, label = '2')
+        # for column in data3.columns:
+        #     sns.kdeplot(data3, x = column, label = '3')
+    for idx, df in enumerate(data):
+        for column in df.columns:
+            sns.kdeplot(df, x = column, label = idx + 1)
+
+    plt.xlim(right = 1)
+    plt.ylim(top = 10)
+    plt.title(f"Measurement dist.s for {metadata['comp']} - {title}")
+    plt.xlabel('Measurement value')
+    plt.legend()
+    plt.show()
+
+
+def plot_tails(data: Union[pd.Series, pd.DataFrame], title: str) -> None:
+    """
+    Plots violin plot of a sensor's different component measurements
+    
+    Used source: https://seaborn.pydata.org/generated/seaborn.violinplot.html
+
+    :param data: DataFrame or Series with component measurements
+    :param title: plot title
+    """
+    set_style()
+
+    if isinstance(data, pd.Series):     # interpret as Series
+        df = pd.DataFrame(data).reset_index()
+        df.columns = (['Component', 'DateTime', 'Value'])
+        sns.violinplot(data = df, x = 'Component', y = 'Value', hue = 'Component', legend = False)
+    else:
+        df = data.reset_index()         # interpret as DataFrame
+        df.columns = (['Component', 'DateTime', 'Value'])
+        sns.violinplot(data = df, x = 'Component', y = 'Value', hue = 'Component', legend = False)
+
+    plt.title(title)
+    plt.ylim(top = 1.0)
+    plt.xlabel('Component')
+    plt.ylabel('Normalised value')
+    plt.show()  
