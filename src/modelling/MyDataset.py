@@ -1,9 +1,20 @@
+# src/modelling/MyDataset.py
+
+# Comment: this class is not used in the current implementation of the project
+
 import torch as tc
 from torch.utils.data import Dataset
 
 class MyDataset(Dataset):
+    """
+    A basic custom dataset class for PyTorch, which takes input (u) and output (y) data
+    and allows easy querying and, for example, compatibility with PyTorch's DataLoader
+    """
     def __init__(self, u, y):
-        """Initliaze the dataset"""
+        """
+        Initialize the dataset with the input (u) and output (y) data,
+        and the number of samples (n), input features (u_f) and output features (y_f)
+        """
         self.u = tc.tensor(u.values, dtype = tc.float32)
         self.y = tc.tensor(y.values, dtype = tc.float32)
         self.n = u.shape[0]
