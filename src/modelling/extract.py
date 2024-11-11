@@ -20,21 +20,21 @@ def import_csv(filename: str) -> pd.DataFrame:
 
 def get_dataframes(what: str, UY: str) -> List[pd.DataFrame]:
     """
-    Convenience function what based on what (= 'train', validation',
+    Convenience function what based on what (= 'train', 'val',
     'test') and UY (= 'input' or 'output') returns the associated
     list of dataframes from the data/data_combined folder
 
-    :param what: 'train', 'validation', 'test'
-    :param UY: 'input', 'output'
+    :param what: 'train', 'val' (= validation), 'test'
+    :param UY: 'u' (= input), 'y' (= output)
     """
-    if UY == 'input':
+    if UY == 'u':
         if what == 'train':
             return [import_csv('train_2017_combined_u.csv'),
                     import_csv('train_2018_combined_u.csv'),
                     import_csv('train_2020_combined_u.csv'),
                     import_csv('train_2021_combined_u.csv'),
                     import_csv('train_2022_combined_u.csv')]
-        if what == 'validation':
+        if what == 'val':
             return [import_csv('val_2021_combined_u.csv'),
                     import_csv('val_2022_combined_u.csv'),
                     import_csv('val_2023_combined_u.csv')]
@@ -42,14 +42,14 @@ def get_dataframes(what: str, UY: str) -> List[pd.DataFrame]:
             return [import_csv('test_2021_combined_u.csv'),
                     import_csv('test_2022_combined_u.csv'),
                     import_csv('test_2023_combined_u.csv')]
-    if UY == 'output':
+    if UY == 'y':
         if what == 'train':
             return [import_csv('train_2017_combined_y.csv'),
                     import_csv('train_2018_combined_y.csv'),
                     import_csv('train_2020_combined_y.csv'),
                     import_csv('train_2021_combined_y.csv'),
                     import_csv('train_2022_combined_y.csv')]
-        if what == 'validation':
+        if what == 'val':
             return [import_csv('val_2021_combined_y.csv'),
                     import_csv('val_2022_combined_y.csv'),
                     import_csv('val_2023_combined_y.csv')]
@@ -57,4 +57,4 @@ def get_dataframes(what: str, UY: str) -> List[pd.DataFrame]:
             return [import_csv('test_2021_combined_y.csv'),
                     import_csv('test_2022_combined_y.csv'),
                     import_csv('test_2023_combined_y.csv')]
-    raise ValueError(f"Invalid what ({what}) or UY ({UY}) parameter")
+    raise ValueError(f"Invalid 'what' ({what}) or 'UY' ({UY}) parameter")

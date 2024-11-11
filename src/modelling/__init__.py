@@ -13,4 +13,6 @@ from .EarlyStopper import EarlyStopper
 from .TimeSeriesDataset import TimeSeriesDataset
 from .PrintManager import PrintManager
 
+from .HGRU import HGRU
+
 print("Modelling package initialized\n")
