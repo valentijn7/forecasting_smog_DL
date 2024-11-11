@@ -1,18 +1,18 @@
-# Forecasting smog clouds with deep learning
+# Thesis repository: 'Forecasting Smog Clouds With Deep Learning'
 
-This repository contains the scripts belonging to a paper titled "Forecasting Smog Clouds With Deep Learning: A Proof-Of-Concept", available at [INSERT].
+This repository contains scripts belonging to a thesis, '[Forecasting Smog Clouds With Deep Learning](https://fse.studenttheses.ub.rug.nl/32424/1/bAI2024OldenburgVW.pdf.pdf),' and a [paper](https://openreview.net/forum?id=UQa2PEVHMF) that followed out of it.
 
-For direct contact or questions:
-v.w.oldenburg@student.rug.nl / vwoldenburg@gmail.com
+For direct contact or questions, please contact: [v.w.oldenburg@student.rug.nl](mailto:v.w.oldenburg@student.rug.nl) (and [vwoldenburg@gmail.com](mailto:vwoldenburg@gmail.com) in cc, in case access to the former is lost).
 
 ## Description
 
-The code available covers a pipeline from pollution and meteorological data (both made available by an initiative by the Dutch Government and the Royal Dutch Meteorological Institute (KNMI)) to using this data to forecast four constituents to smog over two locations in the Netherlands with a 1 hr lead time.
+As the original codebase was quite a mess, the core and most essential *bits* are bundled here. The GRU and HGRU models are runnable, and upon supplementation of the data, the results can be reproduced.
 
-Main files here are:
+The scripts cover a pipeline from online-available pollution and meteorological data through preprocessing to forecasting four constituents to smog clouds over two location in the Netherlands. This can be divided into two directories:
+1. ``pipeline/`` contains the ``pipeline`` package which takes pollution data published by an initiative of the [Dutch Government](https://www.rijksoverheid.nl/) (including the [National Institute for Public Health and the Environment | RIVM](https://www.rivm.nl/en)) and meteorological data published by the [Royal Netherlands Meteorological Institute (KNMI)](https://www.knmi.nl/over-het-knmi/about), tidies it, inspects it through various metrics and visualisations, and, eventually, preprocesses it into a ready-to-use dataset. -- It can be ran either from the command line with ``preprocess.py`` or from a notebook with ``preprocess.ipynb``.
+2. ``modelling/`` contains the more freely structured ``modelling`` package; it defines various classes and functions which come together in the ``run_models.ipynb`` notebook to run the models.
 
-- preprocess.py, which preprocesses the data; and
-- model.py, which utilises the data and implements a hierarchical GRU model.
+The scripts contain a fair amount of comments for more explanation and specifics. And, lastly, ``plots.py`` hosts *a lot* of functions for plotting used in the thesis/paper.
 
 ## Data
 
@@ -22,6 +22,6 @@ The source location was chosen to be in Utrecht, near the headquarters of the KN
 
 The (raw) data is not uploaded to this repository, but can be added to the /data folders for the code to run.
 
-## Dependencies:
+## Dependencies
 
-The dependencies used in this project are listed in requirements.txt, though only "ordinary" libraries such as NumPy, pandas, and PyTorch are used.
+The dependencies used in this project are listed in requirements.txt, though only "ordinary" libraries such as numpy, pandas, and PyTorch are utilised. 
