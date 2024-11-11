@@ -90,27 +90,29 @@ class HGRU(nn.Module):
         self._check_branch_parameters__()
         self.d_branch_units = self.d_output_untis // self.d_branches
         
-        self.input_layer = nn.GRU(      # Initialize input layer and shared layer
+        self.input_layer = nn.GRU(      # initialize input layer and shared layer
             self.d_input_units, self.d_hidden_units, batch_first = True
             )
+        
         self.shared_layer = nn.GRU(
             self.d_hidden_units, self.d_hidden_units, batch_first = True
             )
-        self.branches = nn.ModuleList() # Initialize branches, using Branch module:
+        
+        self.branches = nn.ModuleList() # initialize branches, using Branch module:
         for _ in range(self.d_branches):
-            # First, initialize the (first and only) shared GRU layer
+            # first, initialize the (first and only) shared GRU layer
             branch_layers = [nn.GRU(self.d_hidden_units,
                                      self.d_hidden_units // self.d_branches,
                                      batch_first = True)]
-            # Second, initialize the branch-specific layers
+            # second, initialize the branch-specific layers
             branch_layers.extend([nn.GRU(self.d_hidden_units // self.d_branches,
                                           self.d_hidden_units // self.d_branches, 
                                           self.d_hidden_layers - 1,
                                           batch_first = True)])
-            # Third, initialize the output layer
+            # third, initialize the output layer
             branch_layers.append(nn.Linear(self.d_hidden_units // self.d_branches,
                                            self.d_output_untis // self.d_branches))
-            # Lastly, pass the layers to the module, and append the branches
+            # lastly, pass the layers to the module, and append the branches
             self.branches.append(Branch(branch_layers, self.d_n_hours_y))
 
     def _check_branch_parameters__(self):
@@ -137,5 +139,5 @@ class HGRU(nn.Module):
                                         # pass through shared layer, discard hidden states
         shared_output, _ = self.shared_layer(u)
                                         # pass through branches, discard hidden states, in
-                                        # seach electing the last N_HOURS_Y outputs
+                                        # each selecting the last N_HOURS_Y outputs
         return [branch(shared_output[:, -self.d_n_hours_y:, :]) for branch in self.branches]
