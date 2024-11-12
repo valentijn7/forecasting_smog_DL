@@ -15,6 +15,8 @@ from .denormalise import denormalise
 from .EarlyStopper import EarlyStopper
 from .TimeSeriesDataset import TimeSeriesDataset
 from .PrintManager import PrintManager
+from .test import test_hierarchical
+from .test import test_hierarchical_separately
 
 from .plots import get_pred_and_gt
 from .plots import get_index
