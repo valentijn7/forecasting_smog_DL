@@ -119,7 +119,7 @@ class HGRU(nn.Module):
                                           batch_first = True)])
             # third, initialize the output layer
             branch_layers.append(nn.Linear(self.d_hidden_units // self.d_branches,
-                                           self.d_output_untis // self.d_branches))
+                                           self.d_output_units // self.d_branches))
             # lastly, pass the layers to the module, and append the branches
             self.branches.append(Branch(branch_layers, self.d_n_hours_y))
 
