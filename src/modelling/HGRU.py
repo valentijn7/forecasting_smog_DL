@@ -50,8 +50,8 @@ class Branch(nn.Module):
                                         # which yields (N_HOURS_Y, N_BATCHES, N_OUTPUT_UNITS),
                                         # then transpose to (N_BATCHES, N_HOURS_Y, N_OUTPUT_UNITS)
         return torch.stack([self.layers[-1](out[:, idx, :])
-                         for idx in range(-self.d_n_hours_y, 0)],
-                        dim = 0).transpose(0, 1)
+                            for idx in range(-self.d_n_hours_y, 0)],
+                            dim = 0).transpose(0, 1)
 
 class HGRU(nn.Module):
     """
@@ -78,7 +78,15 @@ class HGRU(nn.Module):
         data members, loosely checks for divisibility, and initializes the
         input and shared layers, and the branches. The branches are initialized
         using the Branch module, defined above.
-        """
+
+        :param N_HOURS_U: the number of hours in the input sequence
+        :param N_HOURS_Y: the number of hours in the output sequence
+        :param N_INPUT_UNITS: the number of input units
+        :param N_HIDDEN_LAYERS: the number of hidden layers
+        :param N_HIDDEN_UNITS: the number of hidden units
+        :param N_BRANCHES: the number of branches
+        :param N_OUTPUT_UNITS: the number of output units
+        """ # First, iniatialize data members (denoted by d_ prefix)
         super(HGRU, self).__init__()
         self.d_n_hours_u = N_HOURS_U
         self.d_n_hours_y = N_HOURS_Y
@@ -86,9 +94,9 @@ class HGRU(nn.Module):
         self.d_hidden_layers = N_HIDDEN_LAYERS
         self.d_hidden_units = N_HIDDEN_UNITS
         self.d_branches = N_BRANCHES
-        self.d_output_untis = N_OUTPUT_UNITS
+        self.d_output_units = N_OUTPUT_UNITS
         self._check_branch_parameters__()
-        self.d_branch_units = self.d_output_untis // self.d_branches
+        self.d_branch_units = self.d_output_units // self.d_branches
         
         self.input_layer = nn.GRU(      # initialize input layer and shared layer
             self.d_input_units, self.d_hidden_units, batch_first = True
@@ -122,10 +130,10 @@ class HGRU(nn.Module):
         """
         if self.d_hidden_units % self.d_branches != 0:
             raise ValueError("N_HIDDEN_UNITS must be divisible by N_BRANCHES")
-        if self.d_output_untis % self.d_branches != 0:
+        if self.d_output_units % self.d_branches != 0:
             raise ValueError("N_OUTPUT_UNITS must be divisible by N_BRANCHES")
 
-    def forward(self, u):
+    def forward(self, u: torch.Tensor) -> List[torch.Tensor]:
         """
         Forward pass of the model:
         - Pass input through input layer, discard hidden states
