@@ -4,7 +4,7 @@
 # - plain timeseries plots of a certain sensor
 # - timeseries plot with (rolling) min, mean, and max values
 # - timeseries plot with daily and monthly mean values
-# - ... TBC
+# - etc.
 
 from .statistics import get_daily_sensor_metrics
 from .statistics import get_mean_per_day
@@ -28,6 +28,23 @@ def set_style():
     sns.axes_style('darkgrid')
     sns.set_palette('dark') 
     sns.set_context('notebook')
+
+
+def set_thesis_style() -> None:
+    """
+    Sets a more precise style suited for the thesis
+    """
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "Computer Modern Serif",
+        "axes.labelsize": 8,     # fontsize for x and y labels
+        "xtick.labelsize": 8,    # fontsize of the tick labels
+        "ytick.labelsize": 8,    # fontsize of the tick labels
+        "legend.fontsize": 8,    # fontsize of the legen
+    })
+    
+    sns.set_theme(style = 'ticks')
+    sns.set_context("paper")
     
 
 def plot_sensor(df: pd.DataFrame, sensor: str, info: str = ''):
