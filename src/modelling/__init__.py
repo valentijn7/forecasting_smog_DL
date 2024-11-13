@@ -12,9 +12,13 @@ from .extract import get_dataframes
 from .denormalise import retrieve_min_max
 from .denormalise import normalise_linear_inv
 from .denormalise import denormalise
+from .train import train
 from .train import train_hierarchical
 from .cross_validation import k_fold_cross_validation_expanding_hierarchical
 from .grid_search import grid_search
+from .grid_search import update_dict
+from .grid_search import print_dict_vertically
+from .grid_search import print_dict_vertically_root
 from .EarlyStopper import EarlyStopper
 from .TimeSeriesDataset import TimeSeriesDataset
 from .PrintManager import PrintManager

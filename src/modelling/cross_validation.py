@@ -2,10 +2,12 @@
 
 # Functions for k-fold expanding window cross-validation
 
+from .train import train
 from .train import train_hierarchical
 
 from typing import Any, List, Dict, Tuple
 import numpy as np
+from torch.utils.data import Dataset as Dataset
 from torch.utils.data import DataLoader
 from torch.utils.data import SubsetRandomSampler
 from torch.utils.data import SequentialSampler
@@ -90,7 +92,8 @@ def get_idx_k_fold_cross_validation_sliding_window(
     
 
 def k_fold_cross_validation_expanding_hierarchical(
-        hp: Dict[str, Any], train_dataset, verbose = True
+        hp: Dict[str, Any], train_dataset: Dataset,
+        verbose: bool = True, hier: bool = True
     ): 
     """
     Does k-fold expanding window cross validation training on a
@@ -101,6 +104,12 @@ def k_fold_cross_validation_expanding_hierarchical(
         - train the model on the current fold
         - store the final validation loss
     - return the average of the final validation losses
+
+    :param hp: dictionary with hyperparameters
+    :param train_dataset: dataset to train on
+    :param verbose: whether to print progress
+    :param hier: whether to use hierarchical training
+    :return: average of final validation
     """
     val_losses_kfold = []
 
@@ -116,7 +125,10 @@ def k_fold_cross_validation_expanding_hierarchical(
         val_loader = DataLoader(train_dataset, batch_size = hp['batch_sz'], 
                             sampler = SequentialSampler(val_indices))
                                         # train new model on the current fold
-        _, _, val_losses, _, _ = train_hierarchical(hp, train_loader, val_loader, verbose)
+        if hier:
+            _, _, val_losses, _, _ = train_hierarchical(hp, train_loader, val_loader, verbose)
+        else:
+            _, _, val_losses, _, _ = train(hp, train_loader, val_loader, verbose)
         val_losses_kfold.append(val_losses)
-
+                                        # return average of final validation losses
     return np.mean([losses[-1] for losses in val_losses_kfold])

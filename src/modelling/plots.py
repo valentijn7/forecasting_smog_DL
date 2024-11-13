@@ -51,7 +51,7 @@ def set_thesis_style() -> None:
 
 
 def get_pred_and_gt(
-        model: Any, dataset: torch.utils.data.Dataset, idx: int, denorm = True
+        model: Any, dataset: torch.utils.data.Dataset, idx: int, denorm = True, hier = False
     ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the predictions and ground truth for a given row
@@ -63,6 +63,7 @@ def get_pred_and_gt(
     :param dataset: dataset to be used for prediction
     :param idx: index of the row in the dataset
     :param denorm: whether to denormalise the values (default: True)
+    :param hier: whether the model is hierarchical (default: True)
     :return: tuple of predictions and ground truth, as numpy arrays
     """                                 # with .unsqueeze(0) we add a batch dimension
     input_data = dataset[idx][0].unsqueeze(0)
@@ -73,11 +74,16 @@ def get_pred_and_gt(
                                         # which contains the contaminant values--the model outputs
                                         # a tensor with shape (batch_size, time_steps, n_contaminants),
                                         # or, more generally, (batch_size, time_steps, n_features)
-        pred = denormalise(torch.cat(model(input_data), dim = 2),
-                           MINMAX_PATH).detach().numpy()
+        if hier:
+            pred = denormalise(torch.cat(model(input_data), dim = 2), MINMAX_PATH).detach().numpy()
+        else: 
+            pred = denormalise(model(input_data), MINMAX_PATH).detach().numpy()
         gt = denormalise(ground_truth, MINMAX_PATH).detach().numpy()
     else:
-        pred = torch.cat(model(input_data), dim = 2).detach().numpy()
+        if hier:
+            pred = torch.cat(model(input_data), dim = 2).detach().numpy()
+        else:
+            pred = model(input_data).detach().numpy()
         gt = ground_truth.detach().numpy()
 
     if pred.shape[0] != gt.shape[0]:
@@ -133,7 +139,8 @@ def get_index(list: list, component: str) -> int:
     
 
 def choose_plot_component_values(
-        model: Any, dataset: torch.utils.data.Dataset, idx: int, comp: str, denorm = True
+        model: Any, dataset: torch.utils.data.Dataset,
+        idx: int, comp: str, denorm = True, hier = False
     ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Chooses the correct component values for plotting by:
@@ -147,9 +154,10 @@ def choose_plot_component_values(
     :param idx: index of the row in the dataset
     :param comp: component to be plotted
     :param denorm: whether to denormalise the values (default: True)
+    :param hier: whether the model is hierarchical (default: False)
     :return: tuple of predictions and ground truth for the component
     """
-    pred, gt = get_pred_and_gt(model, dataset, idx, denorm)
+    pred, gt = get_pred_and_gt(model, dataset, idx, denorm, hier)
     comp_idx = get_index(CONTAMINANTS, comp)
     return np.squeeze(pred[:, :, comp_idx]), np.squeeze(gt[:, :, comp_idx])
 

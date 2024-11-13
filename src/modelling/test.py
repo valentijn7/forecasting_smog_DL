@@ -1,10 +1,11 @@
 # src/modelling/test.py
 
-# Functions that test the models' performance
+# Functions that test the models' performance, both
+# hierarchical and non-hierarchical, on the test set
 
 from .denormalise import denormalise
 
-from typing import Any, List, Dict
+from typing import Any, Dict
 import numpy as np
 import torch
 import torch.nn as nn
@@ -66,7 +67,7 @@ def test_hierarchical_separately(
     model.eval()                            # set model to evaluation mode
     test_losses = [np.float64(0) for _ in components]
 
-    with torch.no_grad():                      # don't calculate gradients
+    with torch.no_grad():                   # don't calculate gradients
                                             # loop over all batches
         for batch_test_u, batch_test_y in test_loader:
                                             # pass batch through model
@@ -84,5 +85,71 @@ def test_hierarchical_separately(
                 ).item()                    # item() to get the actual value
 
     for comp in range(len(components)):     # divide by number of batches
+        test_losses[comp] /= len(test_loader)
+    return {comp: loss for comp, loss in zip(components, test_losses)}
+
+
+def test(model: Any, loss_fn: Any, test_loader: torch.data.utils.DataLoader,
+         denorm = False, path = None
+    ) -> float:
+    """
+    Evaluates on test set and returns test loss for non-hierarchical models.
+    Or, more literally, it passes a DataLoader's batches through the model
+    and calculates the average loss over the entire Dataset
+
+    :param model: model to evaluate, must be some PyTorch type model
+    :param loss_fn: loss function to use, PyTorch defined, or PyTorch inherited
+    :param test_loader: DataLoader to get batches from
+    :param denorm: whether to denormalise the data before calculating loss
+    :param path: path to the file containing the minmax values for the data
+    :return: average loss over the entire test set
+    """
+    model.eval()
+    test_loss = np.float64(0)
+
+    with torch.no_grad():
+        for batch_test_u, batch_test_y in test_loader:
+            pred = model(batch_test_u)
+            if denorm:
+                pred = denormalise(pred, path)
+                batch_test_y = denormalise(batch_test_y, path)
+            test_loss += loss_fn(pred, batch_test_y).item()
+
+    return test_loss / len(test_loader)
+
+
+def test_separately(
+        model: Any, loss_fn: Any, test_loader: torch.utils.data.DataLoader,
+        denorm: bool = False, path: str = None,
+        components = ['NO2', 'O3', 'PM10', 'PM25']
+    ) -> Dict[str, float]:
+    """
+    Evaluates on test set and returns test loss
+    
+    :param model: model to evaluate, must be some PyTorch type model
+    :param loss_fn: loss function to use, PyTorch defined, or PyTorch inherited
+    :param test_loader: DataLoader to get batches from
+    :param denorm: whether to denormalise the data before calculating loss
+    :param path: path to the file containing the minmax values for the data
+    :return: dictionary with contaminant names as keys and losses as values
+    """
+    model.eval()
+    test_losses = [np.float64(0) for _ in components]
+
+    with torch.no_grad():
+        for batch_test_u, batch_test_y in test_loader:
+
+            pred = model(batch_test_u)
+            if denorm:
+                pred = denormalise(pred, path)
+                batch_test_y = denormalise(batch_test_y, path)
+
+            for comp in range(len(components)):                    
+                test_losses[comp] += loss_fn(
+                    pred[:, :, comp],
+                    batch_test_y[:, :, comp]
+                ).item()
+
+    for comp in range(len(components)):
         test_losses[comp] /= len(test_loader)
     return {comp: loss for comp, loss in zip(components, test_losses)}

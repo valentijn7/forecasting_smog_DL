@@ -119,7 +119,8 @@ def print_end_of_grid_search(best_hp: Dict[str, Any], best_val_loss: float) -> N
 
 def grid_search(
         hp: Dict[str, Any], hp_space: Dict[str, Any],
-        train_dataset: torch.utils.data.Dataset, verbose: bool = False
+        train_dataset: torch.utils.data.Dataset,
+        verbose: bool = False, hier: bool = True
     ) -> Tuple[Dict[str, Any], float]:
     """
     Perform an ordinary grid search through hyperparameter space:
@@ -135,6 +136,7 @@ def grid_search(
     :param hp_space: dictionary with hyperparameter space
     :param train_dataset: training dataset
     :param verbose: whether to print the results of each configuration
+    :param hier: whether to use hierarchical training
     :return: best hyperparameters and validation loss
     """
     best_hp, best_val_loss = {}, np.inf
@@ -145,7 +147,7 @@ def grid_search(
             print_current_config(config_dict)
                                         
         current_config_loss = k_fold_cross_validation_expanding_hierarchical(
-            config_dict, train_dataset, verbose
+            config_dict, train_dataset, verbose, hier
         )
         if current_config_loss < best_val_loss:
             best_hp = config_dict.copy()

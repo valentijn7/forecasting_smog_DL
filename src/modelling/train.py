@@ -11,6 +11,19 @@ import pandas as pd
 import torch
 
 
+def init_model(hp: Dict[str, Any]) -> Any:
+    """
+    Initializes standard model
+    
+    :param hp: dictionary of hyperparameters
+    :return: the initialized model
+    """
+    return hp['model_class'](int(hp['input_units']),
+                             int(hp['hidden_layers']), 
+                             int(hp['hidden_units']),
+                             int(hp['output_units']))
+
+
 def init_mb_model(
         hp: Dict[str, Any],
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -296,3 +309,88 @@ def train_hierarchical(
         if early_stopper(val_losses[epoch], epoch, model):
             break
     return early_stopper.best_model, train_losses, val_losses, shared_losses, branch_losses
+
+
+def init_model(hp):
+    """Initializes the model"""
+    return hp['model_class'](int(hp['input_units']), int(hp['hidden_layers']), 
+                             int(hp['hidden_units']), int(hp['output_units']))
+
+
+def print_epoch_loss(epoch, train_losses, val_losses, x = 5):
+    """Prints the train and validation losses per x epochs"""
+    if ((epoch + 1) % x == 0) or (epoch == 0):
+        print("Epoch: {} \tLtrain: {:.6f} \tLval: {:.6f}".format(
+              epoch + 1, train_losses[epoch], val_losses[epoch]))
+
+
+def train(
+        hp: Dict[str, Any], train_loader: torch.utils.data.DataLoader,
+        val_loader: torch.utils.data.DataLoader, verbose: bool = True,
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    ) -> Tuple[Any, List[float], List[float]]:
+    """
+    Trains a fully connected model through a sequence of steps:
+    - initialize the model, optimizer, and loss function
+    - for each epoch (until early stopping is triggered):
+        - for each batch in the training set
+            - do a forward pass
+            - calculate the loss
+            - do a backward pass
+            - update the weights
+        - for each batch in the validation set
+            - calculate the validation loss
+        - save the average losses per batch for each epoch
+        - do a scheduler step
+    - return the trained model and the train and validation losses
+
+    :param hp: dictionary of hyperparameters
+    :param train_loader: DataLoader to get batches from
+    :param val_loader: DataLoader to get batches from
+    :param verbose: whether to print the losses per epoch
+    :param device: the device to train on
+    :return: the trained model, and the train and validation
+    """
+    model = init_model(hp).to(device)
+    optimizer = init_main_optimizer(model, hp)
+    lr_scheduler = init_main_scheduler(optimizer, hp)
+    early_stopper = init_early_stopper(hp, verbose)
+    loss_fn = hp['loss_fn']
+    train_losses, val_losses = [], []
+
+    for epoch in range(hp['epochs']):   # for each epoch:
+        train_loss = 0.0                # reset the losses
+        val_loss = 0.0
+        model.train()                   
+
+        for batch_train_u, batch_train_y in train_loader:
+                                        # move data to GPU if available
+            batch_train_u = batch_train_u.to(device)
+            batch_train_y = batch_train_y.to(device)
+                                        # forward pass
+            batch_loss = loss_fn(model(batch_train_u),
+                                 batch_train_y.squeeze(1))
+            train_loss += batch_loss.item()
+
+            optimizer.zero_grad()       # backward pass
+            batch_loss.backward()
+            optimizer.step()            # update the weights
+
+        model.eval()                    # evaluate the model
+        with torch.no_grad():
+            for batch_val_u, batch_val_y in val_loader:
+                                        # move data to GPU if available
+                batch_val_u = batch_val_u.to(device)
+                batch_val_y = batch_val_y.to(device)
+                                        # calculate validation loss
+                val_loss += loss_fn(model(batch_val_u), batch_val_y).item()
+                                        # save average losses per batch for each epoch
+        train_losses.append(train_loss / len(train_loader))
+        val_losses.append(val_loss / len(val_loader))
+        
+        lr_scheduler.step(val_loss)     
+        print_epoch_loss(epoch, train_losses, val_losses) if verbose else None
+
+        if early_stopper(val_losses[epoch], epoch, model):
+            break
+    return early_stopper.best_model, train_losses, val_losses
