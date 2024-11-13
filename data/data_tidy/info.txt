@@ -1,0 +1,1 @@
+Tidied data from the pipeline can be stored here, as a "pitstop," or for inspection

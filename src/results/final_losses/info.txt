@@ -1,0 +1,2 @@
+After final training, either ran locally or externally, the final train and validation
+losses get automatically stored here, such that they can be plotted or whatever later
