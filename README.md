@@ -12,7 +12,7 @@ The scripts cover a pipeline from online-available pollution and meteorological 
 1. ``pipeline/`` contains the ``pipeline`` package which takes pollution data published by an initiative of the [Dutch Government](https://www.rijksoverheid.nl/) (including the [National Institute for Public Health and the Environment | RIVM](https://www.rivm.nl/en)) and meteorological data published by the [Royal Netherlands Meteorological Institute (KNMI)](https://www.knmi.nl/over-het-knmi/about), tidies it, inspects it through various metrics and visualisations, and, eventually, preprocesses it into a ready-to-use dataset. -- It can be ran either from the command line with ``preprocess.py`` or from a notebook with ``preprocess.ipynb``.
 2. ``modelling/`` contains the more freely structured ``modelling`` package; it defines various classes and functions which come together in the ``run_models.ipynb`` notebook to run the models.
 
-The scripts contain a fair amount of comments for more explanation and specifics. And, lastly, ``plots.py`` hosts *a lot* of functions for plotting used in the thesis/paper.
+Furthermore, the ``src/`` folder's ``notebooks/`` contains a few experimentative notebooks. The scripts contain a fair amount of comments for more explanation and specifics. And, lastly, ``plots.py`` of both ``pipeline/`` and ``modelling/`` hosts quite some functions for plotting used in the thesis/paper.
 
 ## Data
 
