@@ -1,7 +1,12 @@
 # src/pipeline/statistics.py
 
 # This script contains functions which for simple data statistics.
-# A lot of these get used in plots.py
+# A lot of these get used in plots.py. Some references:
+# https://pandas.pydata.org/docs/user_guide/timeseries.html
+# https://pandas.pydata.org/docs/reference/api/pandas.date_range.html
+# https://pandas.pydata.org/docs/reference/api/pandas.Series.resample.html
+# https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#resampling
+# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.shift.html
 
 from typing import List
 import pandas as pd
