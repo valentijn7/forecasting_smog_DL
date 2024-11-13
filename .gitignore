@@ -3,7 +3,6 @@ Pipfile.lock
 *.key
 *.pth
 *.notes
-*.pdf
 *.csv
 2017_meteo_data.txt
 2018_meteo_data.txt
@@ -13,3 +12,4 @@ Pipfile.lock
 2022_meteo_data.txt
 2023_meteo_data.txt
 __pycache__/
+paper_plots.ipynb
