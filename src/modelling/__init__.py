@@ -12,6 +12,9 @@ from .extract import get_dataframes
 from .denormalise import retrieve_min_max
 from .denormalise import normalise_linear_inv
 from .denormalise import denormalise
+from .train import train_hierarchical
+from .cross_validation import k_fold_cross_validation_expanding_hierarchical
+from .grid_search import grid_search
 from .EarlyStopper import EarlyStopper
 from .TimeSeriesDataset import TimeSeriesDataset
 from .PrintManager import PrintManager

@@ -12,3 +12,4 @@ Pipfile.lock
 2022_meteo_data.txt
 2023_meteo_data.txt
 __pycache__/
+GRU.ipynb
