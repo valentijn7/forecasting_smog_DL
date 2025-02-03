@@ -12,8 +12,11 @@ import torch.nn as nn
 
 
 def test_hierarchical(
-        model: Any, loss_fn: Any, test_loader: nn.utils.data.DataLoader,
-        denorm: bool = False, path: str = None
+        model: Any,
+        loss_fn: Any,
+        test_loader: Any,
+        denorm: bool = False,
+        path: str = None
     ) -> float:
     """
     Evaluates an hierarchical model, a model with branches, on a test set.
@@ -47,8 +50,11 @@ def test_hierarchical(
 
 
 def test_hierarchical_separately(
-        model: Any, loss_fn: Any, test_loader: torch.utils.data.DataLoader,
-        denorm: bool = False, path: str = None,
+        model: Any,
+        loss_fn: Any,
+        test_loader: Any,
+        denorm: bool = False,
+        path: str = None,
         components = ['NO2', 'O3', 'PM10', 'PM25']
     ) -> Dict[str, float]:
     """
@@ -89,8 +95,12 @@ def test_hierarchical_separately(
     return {comp: loss for comp, loss in zip(components, test_losses)}
 
 
-def test(model: Any, loss_fn: Any, test_loader: torch.data.utils.DataLoader,
-         denorm = False, path = None
+def test(
+        model: Any,
+        loss_fn: Any,
+        test_loader: Any,
+        denorm = False,
+        path = None
     ) -> float:
     """
     Evaluates on test set and returns test loss for non-hierarchical models.
@@ -119,8 +129,11 @@ def test(model: Any, loss_fn: Any, test_loader: torch.data.utils.DataLoader,
 
 
 def test_separately(
-        model: Any, loss_fn: Any, test_loader: torch.utils.data.DataLoader,
-        denorm: bool = False, path: str = None,
+        model: Any,
+        loss_fn: Any,
+        test_loader: Any,
+        denorm: bool = False,
+        path: str = None,
         components = ['NO2', 'O3', 'PM10', 'PM25']
     ) -> Dict[str, float]:
     """

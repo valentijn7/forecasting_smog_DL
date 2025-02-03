@@ -60,8 +60,14 @@ class TimeSeriesDataset(Dataset):
     - __len__(): Returns the number of possible sampling points
     - __getitem__(): Returns the idx-th pair of the dataset
     """
-    def __init__(self, u: List[pd.DataFrame], y: List[pd.DataFrame],
-                 num_dfs: int, len_seq: int, len_out: int, len_step: int):
+    def __init__(
+            self,
+            u: List[pd.DataFrame],
+            y: List[pd.DataFrame],
+            num_dfs: int,
+            len_seq: int,
+            len_out: int,
+            len_step: int):
         """
         Constructor of the TimeSeriesDataset class. It takes the input and output
         dataframes, the number of dataframes, the length of the input sequence, the
@@ -106,7 +112,10 @@ class TimeSeriesDataset(Dataset):
             self.pairs.extend(self._precompute_pairs__(u_df, y_df, n_samp))
 
     def _precompute_pairs__(
-            self, u: pd.DataFrame, y: pd.DataFrame, n_samp: int
+            self,
+            u: pd.DataFrame,
+            y: pd.DataFrame,
+            n_samp: int
         ) -> List[Tuple[torch.Tensor, torch.Tensor]]:
         """
         Precomputes n samples from the input and output dataframes

@@ -5,7 +5,10 @@
 import torch
 import pandas as pd
 
-def retrieve_min_max(path: str, conts = ['NO2', 'O3', 'PM10', 'PM25']) -> dict:
+def retrieve_min_max(
+        path: str,
+        conts = ['NO2', 'O3', 'PM10', 'PM25']
+    ) -> dict:
     """
     Retrieves the min and max values for each contaminant from the given path by:
     - retrieving and reading the .csv file
@@ -24,7 +27,9 @@ def retrieve_min_max(path: str, conts = ['NO2', 'O3', 'PM10', 'PM25']) -> dict:
 
 
 def normalise_linear_inv(
-        tensor: torch.tensor, min: float, max: float
+        tensor: torch.tensor,
+        min: float,
+        max: float
     ) -> torch.tensor:
     """
     Performs inverse linear scaling (minmax) on a tensor,
@@ -39,7 +44,8 @@ def normalise_linear_inv(
 
 
 def denormalise(
-        tensor_3D: torch.tensor, path: str,
+        tensor_3D: torch.tensor,
+        path: str,
         contaminants: list = ['NO2', 'O3', 'PM10', 'PM25']
     ) -> torch.tensor:
     """

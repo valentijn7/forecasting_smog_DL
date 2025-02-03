@@ -4,31 +4,15 @@
 # its functions extract data from the source and return it as a DataFrame
 
 import os
+from pathlib import Path
 import sys
 import pandas as pd
 
 
-def set_working_directory(path: str, device: str) -> None:
-    """
-    Plainly sets the current working directory to the specified path.
-    Also checks what the current device is, because directory lay-out
-    might differ between machines (e.g. Linux vs Windows).
-
-    :param path: directory path
-    :param device: device name
-    """
-    if device == 'tinus':
-        os.chdir(path)
-    elif device == 'habrok':
-        os.chdir(path)
-    ### Add more devices here if needed
-    else:
-        sys.exit("Device not recognised. Please enter a valid device name.")
-
-
-
 def read_contaminant_csv_from_data_raw(
-        component: str, year: str, path: str, device: str, rows_to_skip: int = 9
+        component: str,
+        year: str,
+        rows_to_skip: int = 9
     ) -> pd.DataFrame:
     """
     Reads the contaminant data from the raw data folder. The data is in CSV format.
@@ -47,7 +31,7 @@ def read_contaminant_csv_from_data_raw(
     :param rows_to_skip: the number of rows to skip in the CSV file
     :return: the contaminant data as a pandas DataFrame
     """
-    set_working_directory(path, device)
+    os.chdir(Path.cwd())
                                                       
     return pd.read_csv(f"../data/data_raw/{year}_{component}.csv", 
                        sep = ';',
@@ -55,7 +39,9 @@ def read_contaminant_csv_from_data_raw(
                        skiprows = rows_to_skip)
 
 
-def read_meteo_csv_from_data_raw(year: str, path: str, device: str) -> pd.DataFrame:
+def read_meteo_csv_from_data_raw(
+        year: str
+    ) -> pd.DataFrame:
     """
     Reads the meteorological data from the raw data folder
 
@@ -64,7 +50,7 @@ def read_meteo_csv_from_data_raw(year: str, path: str, device: str) -> pd.DataFr
     :param device: the device name
     :return: the meteorological data as a pandas DataFrame
     """
-    set_working_directory(path, device)
+    os.chdir(Path.cwd())
 
     return pd.read_csv(f"../data/data_raw/{year}_meteo_Utrecht.csv",
                        sep = ';',
@@ -73,7 +59,8 @@ def read_meteo_csv_from_data_raw(year: str, path: str, device: str) -> pd.DataFr
                                                           
                                                             
 def read_four_contaminants(
-        year: str, contaminants: str, path: str, device: str
+        year: str,
+        contaminants: str
     ) -> pd.DataFrame:
     """
     Helper function for downloading four contaminant dataframes at once
@@ -84,14 +71,17 @@ def read_four_contaminants(
     :param device: the device name
     :return: four contaminant dataframes
     """
-    df1 = read_contaminant_csv_from_data_raw(contaminants[0], year, path, device)
-    df2 = read_contaminant_csv_from_data_raw(contaminants[1], year, path, device)
-    df3 = read_contaminant_csv_from_data_raw(contaminants[2], year, path, device)
-    df4 = read_contaminant_csv_from_data_raw(contaminants[3], year, path, device)
+    df1 = read_contaminant_csv_from_data_raw(contaminants[0], year)
+    df2 = read_contaminant_csv_from_data_raw(contaminants[1], year)
+    df3 = read_contaminant_csv_from_data_raw(contaminants[2], year)
+    df4 = read_contaminant_csv_from_data_raw(contaminants[3], year)
     return df1, df2, df3, df4
 
 
-def read_two_meteo_years(yr1: str, yr2: str, path: str, device: str) -> pd.DataFrame:
+def read_two_meteo_years(
+        yr1: str,
+        yr2: str
+    ) -> pd.DataFrame:
     """
     Helper function for downloading two meteorological dataframes at once
     
@@ -101,6 +91,4 @@ def read_two_meteo_years(yr1: str, yr2: str, path: str, device: str) -> pd.DataF
     :param device: the device name
     :return: two meteorological dataframes
     """
-    df1 = read_meteo_csv_from_data_raw(yr1, path, device)
-    df2 = read_meteo_csv_from_data_raw(yr2, path, device)
-    return df1, df2
+    return read_meteo_csv_from_data_raw(yr1), read_meteo_csv_from_data_raw(yr2)

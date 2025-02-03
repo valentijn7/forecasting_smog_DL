@@ -10,7 +10,8 @@ import torch
 
 
 def filter_dict_by_keys(
-        dict: Dict[str, Any], secondary_dict: Dict[str, Any]
+        dict: Dict[str, Any],
+        secondary_dict: Dict[str, Any]
     ) -> Dict[str, Any]:
     """
     Filters a dictionary by the keys of another dictionary. For example:
@@ -25,7 +26,8 @@ def filter_dict_by_keys(
 
 
 def update_dict(
-        dict: Dict[str, Any] , secondary_dict: Dict[str, Any]
+        dict: Dict[str, Any],
+        secondary_dict: Dict[str, Any]
     ) -> Dict[str, Any]:
     """
     Updates a dictionary with the keys of another dictionary. For example:
@@ -39,7 +41,9 @@ def update_dict(
     return {**dict, **secondary_dict}
 
 
-def print_dict_vertically(d: Dict[str, Any]) -> None:
+def print_dict_vertically(
+        d: Dict[str, Any]
+    ) -> None:
     """
     Prettyprints a dictionary formatted vertically
     
@@ -50,7 +54,9 @@ def print_dict_vertically(d: Dict[str, Any]) -> None:
         print(f"{key:{max_key_len}}: {value}")
 
 
-def print_dict_vertically_root(d: Dict[str, Any]) -> None:
+def print_dict_vertically_root(
+        d: Dict[str, Any]
+    ) -> None:
     """
     Pretty prints a dictionary formatted vertically,
     but takes the square root of the values (useful for
@@ -63,7 +69,9 @@ def print_dict_vertically_root(d: Dict[str, Any]) -> None:
         print(f"{key:{max_key_len}}: {np.sqrt(value)}")
 
 
-def ensure_integers(configs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def ensure_integers(
+        configs: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
     """
     Prevents a nasty occassional type error, or rather,
     untrackable bug, by ensuring that the hidden_layers and
@@ -78,7 +86,9 @@ def ensure_integers(configs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return configs
 
 
-def gen_configs(hp_space: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
+def gen_configs(
+        hp_space: Dict[str, List[Any]]
+    ) -> List[Dict[str, Any]]:
     """
     Helper function to initiate the configuration generator
     # https://stackoverflow.com/questions/798854/all-combinations-of-a-list-of-lists
@@ -93,7 +103,9 @@ def gen_configs(hp_space: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
     return ensure_integers(configs)
 
 
-def print_current_config(config: Dict[str, Any]) -> None:
+def print_current_config(
+        config: Dict[str, Any]
+    ) -> None:
     """
     Prints the current configuration
     
@@ -104,7 +116,10 @@ def print_current_config(config: Dict[str, Any]) -> None:
     print()
 
 
-def print_end_of_grid_search(best_hp: Dict[str, Any], best_val_loss: float) -> None:
+def print_end_of_grid_search(
+        best_hp: Dict[str, Any],
+        best_val_loss: float
+    ) -> None:
     """
     Prints the results of the grid search
     
@@ -118,9 +133,11 @@ def print_end_of_grid_search(best_hp: Dict[str, Any], best_val_loss: float) -> N
 
 
 def grid_search(
-        hp: Dict[str, Any], hp_space: Dict[str, Any],
+        hp: Dict[str, Any],
+        hp_space: Dict[str, Any],
         train_dataset: torch.utils.data.Dataset,
-        verbose: bool = False, hier: bool = True
+        verbose: bool = False,
+        hier: bool = True
     ) -> Tuple[Dict[str, Any], float]:
     """
     Perform an ordinary grid search through hyperparameter space:

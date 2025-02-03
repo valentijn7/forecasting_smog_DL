@@ -13,7 +13,9 @@ from torch.utils.data import SubsetRandomSampler
 from torch.utils.data import SequentialSampler
 
 
-def calc_means_unequal_lists(lists: List[List[float]]) -> List[float]:
+def calc_means_unequal_lists(
+        lists: List[List[float]]
+    ) -> List[float]:
     """
     Calculates the means of lists with unequal lengths.
     This is useful for calculating the average train and
@@ -33,7 +35,9 @@ def calc_means_unequal_lists(lists: List[List[float]]) -> List[float]:
 
 
 def get_idx_k_fold_cross_validation_expanding_window(
-        fold: int, n_folds: int, dataset_len: int
+        fold: int,
+        n_folds: int,
+        dataset_len: int
     ) -> Tuple[List[int], List[int]]:
     """
     Calculates the indices of expanding window k-fold cross validation by:
@@ -63,7 +67,9 @@ def get_idx_k_fold_cross_validation_expanding_window(
 
 
 def get_idx_k_fold_cross_validation_sliding_window(
-        fold: int, n_folds: int, dataset_len: int
+        fold: int,
+        n_folds: int,
+        dataset_len: int
     ) -> Tuple[List[int], List[int]]:
     """
     Another variation of k-fold cross validation, this time
@@ -92,8 +98,10 @@ def get_idx_k_fold_cross_validation_sliding_window(
     
 
 def k_fold_cross_validation_expanding_hierarchical(
-        hp: Dict[str, Any], train_dataset: Dataset,
-        verbose: bool = True, hier: bool = True
+        hp: Dict[str, Any],
+        train_dataset: Dataset,
+        verbose: bool = True,
+        hier: bool = True
     ): 
     """
     Does k-fold expanding window cross validation training on a

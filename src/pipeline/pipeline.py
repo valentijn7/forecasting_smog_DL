@@ -35,10 +35,8 @@ from pipeline import assert_range
 
 
 def execute_pipeline(
-        device: str = 'tinus',
-        path: str = r"c:\Users\vwold\Documents\Bachelor\ICML_paper\forecasting_smog_DL\forecasting_smog_DL\src",
         contaminants: list = ['PM25', 'PM10', 'O3', 'NO2'],
-        LOGGER: bool = True,
+        LOG: bool = True,
         SUBSET_MONTHS: bool = True,
         START_MON: str = '08',
         END_MON: str = '12',
@@ -60,10 +58,26 @@ def execute_pipeline(
     6. Concatenate the data
     7. Export the data
 
-    :param 
+    :param contaminants: list of contaminants to be read
+    :param LOG: whether to print data transformation progress
+    :param SUBSET_MONTHS: whether to subset the months (as opposed to
+                          taking entire years of data). True gives
+                          option for the following two booleans:
+    :param START_MON: starting month for the subset(s)
+    :param END_MON: ending month for the subset(s)
+    :param days_vali: number of days in the validation set
+    :param days_test: number of days in the test set
+    :param days_vali_final_yrs: number of days in the validation set
+                                for the final years
+    :param days_test_final_yrs: number of days in the test set
+                                for the final years
+    :return: None
     """
     print('-----------------------------------')
     print('Executing the pipeline\n')
+
+    # if PATH == None:
+    #     raise ValueError('Please provide a path to the data...')
 
     # Sensor locations in the case of Utrecht area:
     DE_BILT = 'S260'       # starting (and only used) location for meteorological data
@@ -72,34 +86,34 @@ def execute_pipeline(
 
     # First step, load in the raw data
     df_PM25_2016_raw, df_PM10_2016_raw, df_O3_2016_raw, df_NO2_2016_raw = \
-        read_four_contaminants(2016, contaminants, path, device)
+        read_four_contaminants(2016, contaminants)
     df_PM25_2017_raw, df_PM10_2017_raw, df_O3_2017_raw, df_NO2_2017_raw = \
-        read_four_contaminants(2017, contaminants, path, device)
+        read_four_contaminants(2017, contaminants)
     df_PM25_2018_raw, df_PM10_2018_raw, df_O3_2018_raw, df_NO2_2018_raw = \
-        read_four_contaminants(2018, contaminants, path, device)
+        read_four_contaminants(2018, contaminants)
     df_PM25_2019_raw, df_PM10_2019_raw, df_O3_2019_raw, df_NO2_2019_raw = \
-        read_four_contaminants(2019, contaminants, path, device)
+        read_four_contaminants(2019, contaminants)
     df_PM25_2020_raw, df_PM10_2020_raw, df_O3_2020_raw, df_NO2_2020_raw = \
-        read_four_contaminants(2020, contaminants, path, device)
+        read_four_contaminants(2020, contaminants)
     df_PM25_2021_raw, df_PM10_2021_raw, df_O3_2021_raw, df_NO2_2021_raw = \
-        read_four_contaminants(2021, contaminants, path, device)
+        read_four_contaminants(2021, contaminants)
     df_PM25_2022_raw, df_PM10_2022_raw, df_O3_2022_raw, df_NO2_2022_raw = \
-        read_four_contaminants(2022, contaminants, path, device)
+        read_four_contaminants(2022, contaminants)
     df_PM25_2023_raw, df_PM10_2023_raw, df_O3_2023_raw, df_NO2_2023_raw = \
-        read_four_contaminants(2023, contaminants, path, device)
+        read_four_contaminants(2023, contaminants)
 
 
-    df_meteo_2016_raw = read_meteo_csv_from_data_raw(2016, path, device)
-    df_meteo_2017_raw = read_meteo_csv_from_data_raw(2017, path, device)
-    df_meteo_2018_raw = read_meteo_csv_from_data_raw(2018, path, device)
-    df_meteo_2019_raw = read_meteo_csv_from_data_raw(2019, path, device)
-    df_meteo_2020_raw = read_meteo_csv_from_data_raw(2020, path, device)
-    df_meteo_2021_raw = read_meteo_csv_from_data_raw(2021, path, device)
-    df_meteo_2022_raw = read_meteo_csv_from_data_raw(2022, path, device)
-    df_meteo_2023_raw = read_meteo_csv_from_data_raw(2023, path, device)
+    df_meteo_2016_raw = read_meteo_csv_from_data_raw(2016)
+    df_meteo_2017_raw = read_meteo_csv_from_data_raw(2017)
+    df_meteo_2018_raw = read_meteo_csv_from_data_raw(2018)
+    df_meteo_2019_raw = read_meteo_csv_from_data_raw(2019)
+    df_meteo_2020_raw = read_meteo_csv_from_data_raw(2020)
+    df_meteo_2021_raw = read_meteo_csv_from_data_raw(2021)
+    df_meteo_2022_raw = read_meteo_csv_from_data_raw(2022)
+    df_meteo_2023_raw = read_meteo_csv_from_data_raw(2023)
 
 
-    if LOGGER:
+    if LOG:
         print('(1/8): Data read successfully')
 
 
@@ -238,7 +252,7 @@ def execute_pipeline(
     # print(df_NO2_2023_tidy.shape)
 
 
-    if LOGGER:
+    if LOG:
         assert_equal_shape([
             # df_PM25_2016_tidy, df_PM10_2016_tidy, df_O3_2016_tidy, df_NO2_2016_tidy,
             df_PM25_2017_tidy, df_PM10_2017_tidy, df_O3_2017_tidy, df_NO2_2017_tidy,
@@ -450,7 +464,7 @@ def execute_pipeline(
     # print(df_Q_2023_tidy.shape)
 
 
-    if LOGGER:
+    if LOG:
         assert_equal_shape([
             # df_temp_2016_tidy, df_dewP_2016_tidy, df_WD_2016_tidy, df_Wvh_2016_tidy, df_Wmax_2016_tidy,
             # df_preT_2016_tidy, df_P_2016_tidy, df_preS_2016_tidy, df_SQ_2016_tidy, df_Q_2016_tidy,
@@ -613,7 +627,7 @@ def execute_pipeline(
     # # df_O3_2019_tidy_subset_1D[TUINDORP] = np.nan
 
 
-    if LOGGER:
+    if LOG:
         assert_equal_shape([
             # df_NO2_2016_tidy_subset_1D, df_O3_2016_tidy_subset_1D,
             # df_PM25_2016_tidy_subset_1D, df_PM10_2016_tidy_subset_1D,
@@ -764,7 +778,7 @@ def execute_pipeline(
             df_SQ_2023_tidy, days_vali_final_yrs, days_test_final_yrs)
 
 
-    if LOGGER:
+    if LOG:
         # First, check for equal shape of pollutant data of unsplitted years
         assert_equal_shape([
             df_PM25_2017_train_1D, df_PM10_2017_train_1D,
@@ -1057,7 +1071,7 @@ def execute_pipeline(
     df_SQ_test_2023_norm = normalise_linear(df_SQ_2023_test, SQ_min_train, SQ_max_train)
 
 
-    if LOGGER:
+    if LOG:
         # Assert range only for training frames, validation and test
         # frames can, very theoretically, have unlimited values
         assert_range([
@@ -1314,7 +1328,7 @@ def execute_pipeline(
  
     # At last, a final check before exporting
 
-    if LOGGER:
+    if LOG:
         # First, check if u-dataframes of unsplitted years have same shape
         assert_equal_shape([
             df_train_2017_horizontal_u, df_train_2018_horizontal_u,
@@ -1396,7 +1410,7 @@ def execute_pipeline(
                                     index = True, sep = ';', decimal = '.', encoding = 'utf-8')
 
 
-    if LOGGER:
+    if LOG:
         print('(8/8): Data exported successfully')
         print('\nData preparation finished')
         print('-----------------------------------')

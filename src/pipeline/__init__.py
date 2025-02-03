@@ -5,7 +5,7 @@
 __version__ = '0.0.0' # MAJOR.MINOR.PATCH versioning
 __author__ = 'valentijn7' # GitHub username
 
-print("\nRunning __init__.py for data pipeline")
+print("\nRunning __init__.py for data pipeline...")
 
 from .extract import read_contaminant_csv_from_data_raw
 from .extract import read_meteo_csv_from_data_raw
