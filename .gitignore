@@ -3,7 +3,13 @@ Pipfile.lock
 *.key
 *.pth
 *.notes
-*.csv
+# *.csv
+WAQI_Europaweg.csv
+WAQI_Groningen.csv
+WAQI_Netherlands.csv
+temp_2004_2024_Groningen.csv
+2021_meteo_Groningen.csv
+2022_meteo_Groningen.csv
 2017_meteo_data.txt
 2018_meteo_data.txt
 2019_meteo_data.txt
